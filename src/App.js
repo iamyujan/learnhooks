@@ -1,9 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Test from './Test';
+import Axios from 'axios';
 
 const App = props => {
     let [count, setCount] = useState(0)
     let [name, setName] = useState('Biplav')
+    let [todos, setTodos]= useState([]);
 
     function addCount(){
         count++
@@ -16,6 +18,16 @@ const App = props => {
     const updateName = () => {
         setName('Prachanda')
     }
+    useEffect(() => {
+        if(todos.length === 0){
+            console.log('e')
+            Axios.get('https://jsonplaceholder.typicode.com/todos')
+            .then(data => {
+                setTodos(data.data);
+            })
+        }
+    })
+
     return(
         <>
             <Test name={name}/>
@@ -23,8 +35,18 @@ const App = props => {
             <button onClick={addCount}>+1</button>
             <button onClick={minusCount}>-1</button>
             <button onClick={updateName}>Change Name</button>
+            <ul>
+            {
+                todos.map(todo => {
+                    return(
+                        <li key={todo.id}>{todo.title}</li>
+                    )
+                })
+            }
+            </ul>
         </>
     )
+
 }
 
 export default App
